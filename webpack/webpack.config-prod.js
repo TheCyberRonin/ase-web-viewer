@@ -14,7 +14,7 @@ module.exports =
   {
     path: path.join(__dirname, '..', 'docs'),
     filename: '[name].[contenthash:8].js',
-    publicPath: '/',
+    publicPath: '',
     chunkFilename: '[name].[contenthash:8].chunk.js'
   },
   optimization: {
