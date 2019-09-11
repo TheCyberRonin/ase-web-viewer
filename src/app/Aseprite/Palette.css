@@ -1,0 +1,56 @@
+.ase-palette-color {
+  width: 25px;
+  height: 25px;
+  border: 1px solid black;
+  position: relative;
+}
+
+.ase-palette-color .ase-palette-hover {
+  position: absolute;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  width: max-content;
+  z-index: 2;
+  left: 30px;
+  border: 1px solid black;
+  background: #7d929e;
+
+}
+
+.ase-palette-color:hover .ase-palette-hover {
+  visibility: visible;
+}
+
+.ase-palette-active-preview {
+  height: 20px;
+}
+
+.ase-palette {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ase-palette-active {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin-top: 5px;
+  border: 1px solid white;
+  border-radius: 2px;
+}
+
+.ase-palette-active-preview {
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.ase-palette-active-hex {
+  text-align: center;
+}
+
+.active-color {
+  border-color: white;
+}

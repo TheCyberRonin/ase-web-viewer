@@ -1,0 +1,66 @@
+.ase-preview-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ase-preview-image-view {
+  background: #655561;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.ase-preview-image {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ase-preview-file-info {
+  font-size: 1.2em;
+  align-self: center;
+  margin-bottom: 40px;
+}
+
+.ase-preview-timeline {
+  margin-top: 20px;
+  background: #c6c6c6;
+  border: 1px solid black;
+  min-height: 50px;
+  border-radius: 2px;
+}
+
+.ase-preview-frames {
+  margin-top: 10px;
+  margin-left: 5px;
+  display: flex;
+}
+
+.ase-preview-frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  height: 25px;
+  width: 25px;
+}
+
+.ase-preview-frame:hover {
+  cursor: pointer;
+}
+
+.ase-preview-frame.active {
+  background: #7d929e;
+  color: white;
+}
+
+.ase-palette-container {
+  background: #655561;
+  width: 5%;
+  border: 1px solid black;
+  padding: 4px;
+  border-radius: 2px;
+}
