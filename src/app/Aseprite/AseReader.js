@@ -177,6 +177,7 @@ class AseReader {
       let chunkData = this.readChunk();
       switch(chunkData.type) {
         case 0x0004:
+        case 0x2006:
         case 0x0011:
         case 0x2016:
         case 0x2017:
