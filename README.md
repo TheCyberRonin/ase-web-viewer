@@ -1,4 +1,4 @@
-![ase-viewer](https://github.com/thecyberronin/ase-web-viewer/blob/master/ase-web.png|alt=viewer)
+![ase-viewer](https://github.com/TheCyberRonin/ase-web-viewer/blob/master/docs/ase-viewer.png)
 
 # ase-web-viewer
 Web viewer for Aseprite files written in React.
