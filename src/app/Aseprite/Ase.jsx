@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import AseReader from './AseReader';
 import Palette from './Palette';
 import './Ase.css';
-import { Z_NO_COMPRESSION } from 'zlib';
 
 const Ase = (props) => {
   const [info, setInfo] = useState({});
