@@ -9,8 +9,7 @@
   position: absolute;
   padding: 5px;
   display: flex;
-  flex-direction: column;
-  text-align: left;
+  align-items: center;
   justify-content: center;
   visibility: hidden;
   width: max-content;
@@ -18,18 +17,11 @@
   left: 30px;
   border: 1px solid black;
   background: #7d929e;
-  font-family: monospace;
-  border-radius: 2px;
 
 }
 
 .ase-palette-color:hover .ase-palette-hover {
   visibility: visible;
-}
-
-.ase-palette-hover-color {
-  height: 25px;
-  border-radius: 2px;
 }
 
 .ase-palette-active-preview {
@@ -48,7 +40,6 @@
   margin-top: 5px;
   border: 1px solid white;
   border-radius: 2px;
-  font-family: monospace;
 }
 
 .ase-palette-active-preview {
