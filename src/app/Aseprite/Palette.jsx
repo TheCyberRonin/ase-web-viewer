@@ -12,7 +12,13 @@ const Palette = (props) => {
         className={`ase-palette-color ${ind === color ? 'active-color' : ''}`}
         style={{background: `rgba(${c.red}, ${c.green}, ${c.blue}, ${c.alpha})`}}
         onClick={() => pickColor(ind)}>
-          <div className="ase-palette-hover">{`r: ${c.red}, g: ${c.green}, b: ${c.blue}, a: ${c.alpha}`}</div>
+          <div className="ase-palette-hover">
+            <span className="ase-palette-hover-color" style={{background: `rgba(${c.red}, ${c.green}, ${c.blue}, ${c.alpha})`}}></span>
+            <span className="ase-palette-hover-red">{`r: ${c.red}`}</span>
+            <span className="ase-palette-hover-green">{`g: ${c.green}`}</span>
+            <span className="ase-palette-hover-blue">{`b: ${c.blue}`}</span>
+            <span className="ase-palette-hover-alpha">{`a: ${c.alpha}`}</span>
+          </div>
       </div>)
     });
   const activeToHex = () =>{
