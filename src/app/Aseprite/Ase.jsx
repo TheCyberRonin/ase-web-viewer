@@ -204,7 +204,7 @@ const Ase = (props) => {
 
   const handleMouseMove = (e) => {
     const ctx = canvas.current.getContext('2d');
-    if (dragStart !== null) {
+    if (dragStart !== null && dragStart !== undefined) {
       trans.x = e.offsetX || (e.pageX - canvas.current.offsetLeft);
       trans.y = e.offsetY || (e.pageY - canvas.current.offsetTop);
       dragged = true;
