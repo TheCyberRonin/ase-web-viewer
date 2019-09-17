@@ -8,3 +8,5 @@ I'm keeping track of what I have done, ideas, bugs, etc here: [Progress Glo boar
 You can use the image for the `ase-web-viewer` in the `icon` directory as a test for the viewer: [aseprite file](https://github.com/TheCyberRonin/ase-web-viewer/blob/master/icon/ase-viewer.aseprite)
 
 *As of now, sRGB color profile and RGB pixels are the only type and color profile that is supported.
+
+Here is the Aseprite [spec](https://github.com/aseprite/aseprite/blob/master/docs/ase-file-specs.md)
