@@ -15,23 +15,23 @@ class AseReader {
     this.numColors;
     this.pixelRatio;
   }
-  readNextByte() {
+  readNextByte () {
     const nextByte = this._dv.getUint8(this._offset, true);
     this._offset += 1;
     return nextByte;
   }
-  readByte(offset) {
+  readByte (offset) {
     return this._dv.getUint8(offset, true);
   }
-  readNextWord() {
+  readNextWord () {
     const word = this._dv.getUint16(this._offset, true);
     this._offset += 2;
     return word;
   }
-  readWord(offset) {
+  readWord (offset) {
     return this._dv.getUint16(offset, true);
   }
-  readNextShort() {
+  readNextShort () {
     const short = this._dv.getInt16(this._offset, true);
     this._offset += 2;
     return short;
@@ -39,31 +39,31 @@ class AseReader {
   readShort(offset) {
     return this._dv.getInt16(offset, true);
   }
-  readNextDWord() {
+  readNextDWord () {
     const dWord = this._dv.getUint32(this._offset, true);
     this._offset += 4;
     return dWord;
   }
-  readDWord(offset) {
+  readDWord (offset) {
     return this._dv.getUint32(offset, true);
   }
-  readNextLong() {
+  readNextLong () {
     const long = this._dv.getInt32(this._offset, true);
     this._offset += 4;
     return long;
   }
-  readLong(offset) {
+  readLong (offset) {
     return this._dv.getInt32(offset, true);
   }
-  readNextFixed() {
+  readNextFixed () {
     const fixed = this._dv.getFloat32(this._offset, true);
     this._offset += 4;
     return fixed;
   }
-  readFixed(offset) {
+  readFixed (offset) {
     return this._dv.getFloat32(offset, true);
   }
-  readNextBytes(numBytes) {
+  readNextBytes (numBytes) {
     let strBuff = new ArrayBuffer(numBytes);
     const strdv = new DataView(strBuff);
     for (let i = 0; i < numBytes; i++) {
@@ -71,7 +71,7 @@ class AseReader {
     }
     return this.Utf8ArrayToStr(new Uint8Array(strBuff));
   }
-  readNextRawBytes(numBytes) {
+  readNextRawBytes (numBytes) {
     let buff = new ArrayBuffer(numBytes);
     const strdv = new DataView(buff);
     for (let i = 0; i < numBytes; i++) {
@@ -79,7 +79,7 @@ class AseReader {
     }
     return new Uint8Array(buff);
   }
-  readRawBytes(numBytes, dv, offset) {
+  readRawBytes (numBytes, dv, offset) {
     let buff = new ArrayBuffer(numBytes - offset);
     const buffdv = new DataView(buff);
     for (let i = 0; i < numBytes - offset; i++) {
@@ -87,7 +87,7 @@ class AseReader {
     }
     return new Uint8Array(buff);
   }
-  readNextString() {
+  readNextString () {
     const numBytes = this.readNextWord();
     return this.readNextBytes(numBytes);
   }
@@ -105,7 +105,7 @@ class AseReader {
    * This library is free.  You can redistribute it and/or modify it.
    */
 
-  Utf8ArrayToStr(array) {
+  Utf8ArrayToStr (array) {
     var out, i, len, c;
     var char2, char3;
 
@@ -144,7 +144,7 @@ class AseReader {
     }
     return out;
   }
-  readHeader() {
+  readHeader () {
     this.fileSize = this.readNextDWord();
     this.readNextWord();
     this.numFrames = this.readNextWord();
@@ -159,23 +159,17 @@ class AseReader {
     this.skipBytes(92);
     return this.numFrames;
   }
-  readFrame() {
+  readFrame () {
     const bytesInFrame = this.readNextDWord();
     this.skipBytes(2);
     const oldChunk = this.readNextWord();
     const frameDuration = this.readNextWord();
     this.skipBytes(2);
     const newChunk = this.readNextDWord();
-    console.log({
-      bytesInFrame,
-      oldChunk,
-      frameDuration,
-      newChunk
-    });
     let cels = [];
-    for(let i = 0; i < newChunk; i ++) {
+    for (let i = 0; i < newChunk; i ++) {
       let chunkData = this.readChunk();
-      switch(chunkData.type) {
+      switch (chunkData.type) {
         case 0x0004:
         case 0x2006:
         case 0x0011:
@@ -186,11 +180,9 @@ class AseReader {
           this.skipBytes(chunkData.chunkSize - 6);
           break;
         case 0x2004:
-          console.log('Layer');
           this.readLayerChunk();
           break;
         case 0x2005:
-          console.log('Cel')
           let celData = this.readCelChunk(chunkData.chunkSize);
           cels.push(celData);
           break;
@@ -201,7 +193,6 @@ class AseReader {
           this.readFrameTagsChunk();
           break;
         case 0x2019:
-          console.log('Palette');
           this.palette = this.readPaletteChunk();
           break;
       }
@@ -211,21 +202,16 @@ class AseReader {
       numChunks: newChunk,
       cels});
   }
-  readColorProfileChunk() {
+  readColorProfileChunk () {
     const type = this.readNextWord();
     const flag = this.readNextWord();
     const fGamma = this.readNextFixed();
     this.skipBytes(8);
-    console.log({
-      type,
-      flag,
-      fGamma
-    });
     this.colorProfile = {type,
       flag,
       fGamma};
   }
-  readPaletteChunk() {
+  readPaletteChunk () {
     const paletteSize = this.readNextDWord();
     const firstColor = this.readNextDWord();
     const secondColor = this.readNextDWord();
@@ -249,18 +235,12 @@ class AseReader {
         name: name !== undefined ? name : 'none'
       });
     }
-    console.log({
-      paletteSize,
-      firstColor,
-      secondColor,
-      colors
-    });
     return { paletteSize,
       firstColor,
       lastColor: secondColor,
       colors };
   }
-  readLayerChunk() {
+  readLayerChunk () {
     const flags = this.readNextWord();
     const type = this.readNextWord();
     const layerChildLevel = this.readNextWord();
@@ -275,24 +255,23 @@ class AseReader {
       blendMode,
       opacity,
       name});
-    console.log({
-      flags,
-      type,
-      layerChildLevel,
-      blendMode,
-      opacity,
-      name
-    });
+      console.log({
+        flags,
+        type,
+        layerChildLevel,
+        blendMode,
+        opacity,
+        name
+      })
   }
   //size of chunk in bytes for the WHOLE thing
-  readCelChunk(chunkSize) {
+  readCelChunk (chunkSize) {
     const layerIndex = this.readNextWord();
     const x = this.readNextShort();
     const y = this.readNextShort();
     const opacity = this.readNextByte();
     const celType = this.readNextWord();
     this.skipBytes(7);
-    console.log(this._offset);
     let w,h, buff, rawCel, linkedFrame, pixelD = {};
     if (celType !== 1) {
       w = this.readNextWord();
@@ -314,16 +293,6 @@ class AseReader {
     } else {
       pixelD.linkedFrame = linkedFrame;
     }
-
-    console.log({
-      layerIndex,
-      x,
-      y,
-      opacity,
-      celType,
-      w,
-      h
-    });
     return { layerIndex,
       xpos: x,
       ypos: y,
@@ -331,16 +300,12 @@ class AseReader {
       celType,
       ...pixelD }
   }
-  readChunk() {
+  readChunk () {
     const cSize = this.readNextDWord();
     const type = this.readNextWord();;
-    console.log({
-      cSize,
-      type
-    });
     return {chunkSize: cSize, type: type};
   }
-  readFrameTagsChunk() {
+  readFrameTagsChunk () {
     const loops = [
       'Forward',
       'Reverse',
@@ -348,7 +313,7 @@ class AseReader {
     ]
     const numTags = this.readNextWord();
     this.skipBytes(8);
-    for(let i = 0; i < numTags; i ++) {
+    for (let i = 0; i < numTags; i ++) {
       let tag = {};
       tag.from = this.readNextWord();
       tag.to = this.readNextWord();
@@ -361,9 +326,9 @@ class AseReader {
       this.tags.push(tag);
     }
   }
-  parse() {
+  parse () {
     const numFrames = this.readHeader();
-    for(let i = 0; i < numFrames; i ++) {
+    for (let i = 0; i < numFrames; i ++) {
       this.readFrame();
     }
   }

@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import AseReader from './AseReader';
 import Palette from './Palette';
+import ColorPreview from './ColorPreview';
 import './Ase.css';
 
 const Ase = (props) => {
   const [info, setInfo] = useState({});
   const [frame, setFrame] = useState(null);
+  const [activeColor, setColor] = useState({});
+  const [hoverColor, setHoverColor] = useState({});
   const canvas = useRef(null);
   const inMemCanvas = useRef(null);
   const scaleMultiplier = 1.1;
@@ -33,28 +36,67 @@ const Ase = (props) => {
   useEffect(() => {
    loadAse(props.file);
   }, [props.file]);
+  const getCelData = (lFrame, numCel) => {
+    let currCel = info.frames[lFrame].cels[numCel];
+    if (currCel.linkedFrame !== undefined) {
+      let nextLFrame = currCel.linkedFrame;
+      let nextCel = currCel;
+      while (nextCel.celType === 1) {
+        currCel = nextCel;
+        nextLFrame = currCel.linkedFrame;
+        nextCel = info.frames[nextLFrame].cels[numCel];
+      }
+      return {h: nextCel.h, w: nextCel.w, rawCelData: nextCel.rawCelData};
+    } else {
+      return {h: currCel.h, w: currCel.w, rawCelData: currCel.rawCelData};
+    }
 
+    
+  }
   const writeCel = (numCel) => {
-    const cel = info.frames[frame].cels[numCel];
-    console.log(cel);
-    if (cel.linkedFrame === undefined) {
-      const ctx = canvas.current.getContext('2d');
-      const inMemContext = inMemCanvas.current.getContext('2d');
-      inMemContext.clearRect(0, 0, inMemCanvas.width, inMemCanvas.height);
-      inMemContext.width = info.width;
-      inMemContext.height = info.height;
-      let imageData = inMemContext.createImageData(cel.w, cel.h);
+    const celData = info.frames[frame].cels[numCel];
+    const cel = celData.celType !== 1 ? celData : { ...getCelData(celData.linkedFrame, numCel), ...celData};
+    const { colorDepth } = info;
+    const ctx = canvas.current.getContext('2d');
+    const inMemContext = inMemCanvas.current.getContext('2d');
+    inMemContext.clearRect(0, 0, inMemCanvas.width, inMemCanvas.height);
+    inMemContext.width = info.width;
+    inMemContext.height = info.height;
+    let imageData = inMemContext.createImageData(cel.w, cel.h);
+    if (colorDepth === 32) { //sRGB
       for (let i = 0; i < cel.rawCelData.byteLength; i++) {
         imageData.data[i] = cel.rawCelData[i];
       }
-      inMemContext.putImageData(imageData, cel.xpos, cel.ypos);
-      ctx.drawImage(inMemCanvas.current, 0, 0);
+    } else if (colorDepth === 16) { //grayscale
+      const imgDataLen = imageData.data.length;
+      for (let i = 4; i < imgDataLen; i += 4) {
+        const value = cel.rawCelData[(i/2) - 2];
+        const alpha = cel.rawCelData[(i/2) - 1];
+        imageData.data[i - 1] = alpha;
+        imageData.data[i - 2] = value;
+        imageData.data[i - 3] = value;
+        imageData.data[i - 4] = value;
+      }
+    } else if (colorDepth === 8) { //indexed
+      const imgDataLen = imageData.data.length;
+      for (let i = 4; i < imgDataLen; i += 4) {
+        const paletteIndex = cel.rawCelData[(i/4) - 1];
+        let color = info.palette.colors[paletteIndex];
+        if (paletteIndex === 0) {
+          color = {red: 0, green: 0, blue: 0, alpha: 0};
+        }
+        imageData.data[i - 1] = color.alpha; //A
+        imageData.data[i - 2] = color.blue; //B
+        imageData.data[i - 3] = color.green; //G
+        imageData.data[i - 4] = color.red; //R
+      }
     }
-
+    inMemContext.putImageData(imageData, cel.xpos, cel.ypos);
+    ctx.drawImage(inMemCanvas.current, 0, 0);
   }
 
   useEffect(() => {
-    if(info.name !== undefined) {
+    if (info.name !== undefined) {
       clearCanvas();
       clearInMemCanvas();
       handleFrameChange();
@@ -70,7 +112,7 @@ const Ase = (props) => {
     clearInMemCanvas();
     ctx.restore();
     const celLen = info.frames[frame].cels.length;
-    for(let i = 0; i < celLen; i ++) {
+    for (let i = 0; i < celLen; i ++) {
       writeCel(i);
     }
   }
@@ -186,8 +228,6 @@ const Ase = (props) => {
   }
 
   const handleScroll = (e) => {
-    console.log(scale);
-    console.log('DeltaX: ', e.deltaX, ' DeltaY: ', e.deltaY, ' DeltaZ: ', e.deltaZ);
     const delta = e.deltaY ? e.deltaY/40 : 0;
     if (delta) {
       zoom(delta);
@@ -223,7 +263,7 @@ const Ase = (props) => {
 
   let palette;
   if (info.name !== undefined) {
-    palette = <Palette colors={info.palette.colors} />
+    palette = <Palette selectColor={setColor} hoverColor={setHoverColor} colors={info.palette !== undefined ? info.palette.colors : Array.from(Array(255).keys()).map(num => { return {red: num, green: num, blue: num, alpha: 255, name: 'none'}})} />
   }
 
   return (
@@ -243,13 +283,24 @@ const Ase = (props) => {
             onMouseUp={(e) => {handleMouseUp(e)}}
             />
         </div>
-        
       </div>
-      <div className="ase-preview-timeline">
-        <div className="ase-preview-frames">
-          {info.name !== undefined ? info.frames.map((f, ind) => <div key={`frame_${ind}`} className={`ase-preview-frame ${ind === frame ? 'active' : ''}`} onClick={() => handleClick(ind)}>{`${ind+1}`}</div>) : ''}
+      <div className="ase-bottom">
+        { activeColor.hex !== undefined ? <ColorPreview active={activeColor} /> : '' }
+        <div className="ase-preview-timeline">
+          <div className="ase-preview-frames">
+            {info.name !== undefined ? info.frames.map((f, ind) => <div key={`frame_${ind}`} className={`ase-preview-frame ${ind === frame ? 'active' : ''}`} onClick={() => handleClick(ind)}>{`${ind+1}`}</div>) : ''}
+          </div>
         </div>
       </div>
+      { hoverColor.hex !== undefined ? <div className="ase-palette-hover">
+          <span className="ase-palette-hover-color" style={{background: `rgba(${hoverColor.red}, ${hoverColor.green}, ${hoverColor.blue}, ${hoverColor.alpha})`}}></span>
+          <span className="ase-palette-hover-red">{`r: ${hoverColor.red},`}</span>
+          <span className="ase-palette-hover-green">{`g: ${hoverColor.green},`}</span>
+          <span className="ase-palette-hover-blue">{`b: ${hoverColor.blue},`}</span>
+          <span className="ase-palette-hover-alpha">{`a: ${hoverColor.alpha},`}</span>
+          <span className="ase-palette-hover-hex">{`#${hoverColor.hex}`}</span>
+        </div> : ''}
+
     </div>
   );
 }

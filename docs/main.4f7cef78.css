@@ -2,51 +2,22 @@
   width: 25px;
   height: 25px;
   border: 1px solid black;
-  position: relative;
-}
-
-.ase-palette-color .ase-palette-hover {
-  position: absolute;
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  visibility: hidden;
-  width: max-content;
-  z-index: 2;
-  left: 30px;
-  border: 1px solid black;
-  background: #7d929e;
-  font-family: monospace;
-  border-radius: 2px;
-}
-
-.ase-palette-color:hover .ase-palette-hover {
-  visibility: visible;
-}
-
-.ase-palette-active-preview {
-  height: 20px;
-}
-
-.ase-palette-hover-color {
-  height: 25px;
-  border-radius: 2px;
 }
 
 .ase-palette {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .ase-palette-active {
   display: flex;
   flex-direction: column;
   padding: 5px;
-  margin-top: 5px;
   border: 1px solid white;
   border-radius: 2px;
   font-family: monospace;
+  width: 8%;
 }
 
 .ase-palette-active-preview {
@@ -58,8 +29,8 @@
   text-align: center;
 }
 
-.active-color {
-  border-color: white;
+.ase-palette-active-preview {
+  height: 20px;
 }
 .ase-preview-container {
   padding: 5px;
@@ -89,17 +60,19 @@
 }
 
 .ase-preview-timeline {
-  margin-top: 20px;
   background: #c6c6c6;
   border: 1px solid black;
-  min-height: 50px;
   border-radius: 2px;
+  overflow: auto;
+  width: 90%;
+  display: flex;
+  align-items: center;
 }
 
 .ase-preview-frames {
-  margin-top: 10px;
-  margin-left: 5px;
+  padding: 5px;
   display: flex;
+  width: min-content;
 }
 
 .ase-preview-frame {
@@ -107,8 +80,9 @@
   justify-content: center;
   align-items: center;
   border: 1px solid white;
-  height: 25px;
-  width: 25px;
+  height: 30px;
+  width: 30px;
+  padding: 2px;
 }
 
 .ase-preview-frame:hover {
@@ -122,10 +96,54 @@
 
 .ase-palette-container {
   background: #655561;
-  width: 5%;
+  width: 8%;
   border: 1px solid black;
   padding: 4px;
   border-radius: 2px;
+  overflow-y: auto;
+  overflow-x: visible;
+  max-height: 75vh;
+}
+
+.ase-preview-timeline::-webkit-scrollbar, .ase-palette-container::-webkit-scrollbar {
+  width: 6px;
+  background-color: #f5f5f5;
+}
+.ase-preview-timeline::-webkit-scrollbar-thumb, .ase-palette-container::-webkit-scrollbar-thumb {
+  background-color: #343434;
+}
+
+.ase-bottom {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ase-palette-hover {
+  margin-top: 5px;
+  padding: 5px;
+  display: flex;
+  width: max-content;
+  border: 1px solid black;
+  background: #7d929e;
+  font-family: monospace;
+  border-radius: 2px;
+  align-items: center;
+}
+
+.ase-palette-hover-color {
+  height: 25px;
+  width: 50px;
+  border-radius: 2px;
+}
+
+.ase-palette-hover-red, .ase-palette-hover-green, .ase-palette-hover-blue,
+.ase-palette-hover-alpha, .ase-palette-hover-hex {
+  margin-left: 5px;
+}
+
+.active-color {
+  border-color: white;
 }
 
 .file-upload-wrapper {
