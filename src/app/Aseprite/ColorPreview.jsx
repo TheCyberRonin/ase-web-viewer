@@ -1,7 +1,7 @@
 import React from 'react';
 import './ColorPreview.css';
 
-const ColorPreview = (props) => {
+const ColorPreview = React.memo((props) => {
   return (
     <div className="ase-palette-active">
       <div className="ase-palette-active-preview" style={{background: `#${props.active.hex}`}}></div>
@@ -9,6 +9,6 @@ const ColorPreview = (props) => {
       <div className="ase-palette-active-alpha">{`Alpha: ${props.active.alpha}`}</div>
     </div>
   )
-}
+})
 
 export default ColorPreview;

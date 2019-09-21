@@ -1,0 +1,13 @@
+.github-btn {
+  position: fixed;
+  right: 20px;
+  top: 13px;
+}
+
+.github-btn:active {
+  transform: scale(0.95);
+}
+
+.github-btn .gh-icon:hover path{
+  fill: #ffffff;
+}
